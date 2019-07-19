@@ -1,5 +1,6 @@
 import speech_recognition as sr
-import pyttsx
+import pyttsx3
+import engineio
 from os import system
 from wit import Wit
 
