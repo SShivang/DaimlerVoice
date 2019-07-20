@@ -10,11 +10,11 @@ app = socketio.WSGIApp(sio, static_files={
 def connect(sid, environ):
     print('connect ', sid)
 
-@sio.on('voice')
+@sio.on('local')
 def another_event(sid, data):
     print('CAUGHT EVENT-------------')
     print(data)
-    sio.emit('timer', data)
+    sio.emit('js-cli', data)
     pass
 
 @sio.event
