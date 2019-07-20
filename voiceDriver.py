@@ -47,7 +47,7 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
 
         response = session_client.detect_intent(
             session=session, query_input=query_input)
-
+        print(response)
         print('=' * 20)
         print('Query text: {}'.format(response.query_result.query_text))
         print('Detected intent: {} (confidence: {})\n'.format(
@@ -56,7 +56,7 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
         print('Fulfillment text: {}\n'.format(
             response.query_result.fulfillment_text))
 
-detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", ["Call Bob"], "en")
+detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", ["Change the website text to hi how are you"], "en")
 
 
 
