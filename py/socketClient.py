@@ -1,15 +1,10 @@
 import socketio
-
+from voiceDriver import runDriver 
 sio = socketio.Client()
 
 @sio.event
 def connect():
     print('connection established')
-
-@sio.event
-def my_message(data):
-    print('message received with ', data)
-    sio.emit('my response', {'response': 'my response'})
 
 @sio.event
 def disconnect():
@@ -18,12 +13,19 @@ def disconnect():
 sio.connect('http://localhost:5000')
 
 def runApp():
-    while True:
-        print('Take input:')
-        g = raw_input()
-        sio.emit('cust', {'data': g})
+        runDriver(sio)
 
 
+if __name__ == '__main__':
+        print('Started app')
+        runApp()
 
-print('Hey ho')
-runApp()
+
+#     while True:
+#         print('Take input:')
+#         g = raw_input()
+#         sio.emit('voice', {
+#                 'data': g,
+#                 'type': 'Voicetype',
+        
+#         })

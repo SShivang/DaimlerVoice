@@ -10,7 +10,7 @@ app = socketio.WSGIApp(sio, static_files={
 def connect(sid, environ):
     print('connect ', sid)
 
-@sio.on('cust')
+@sio.on('voice')
 def another_event(sid, data):
     print('CAUGHT EVENT-------------')
     print(data)
