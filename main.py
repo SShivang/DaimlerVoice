@@ -1,11 +1,9 @@
 import speech_recognition as sr
-import pyttsx
 from os import system
 import apiai
 
 import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/Users/ShivangWork/Desktop/daimlerVoice-d9756f7ed4c9.json"
 
 application_started = False
 
