@@ -30,11 +30,34 @@ def detect_intent_texts(project_id, session_id, text, language_code):
     print('Fulfillment text: {}\n'.format(
             response.query_result.fulfillment_text))
 
+    return response
+
+def WelcomeHandler(response):
+    global application_started
+    application_started = True
+    system('say ' + response.query_result.fulfillment_text)
+
+def ExitHandler(response):
+    system('say ' + response.query_result.fulfillment_text)
+
 if __name__ == '__main__':
     while True:
+        global application_started
         r = sr.Recognizer()
         with sr.Microphone() as source:
             r.adjust_for_ambient_noise(source)
             audio = r.listen(source)
-        recog_str = r.recognize_google(audio, language = 'e')
-        detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", recog_str , "en")
+        recog_str = r.recognize_google(audio, language = 'e', show_all=True)
+
+        if (len(recog_str) != 0):
+            transcriptList = recog_str['alternative']
+            transcript = transcriptList[0]
+            command = transcript['transcript']
+            print(command)
+            response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
+            if (response.query_result.intent.display_name == "Default Welcome Intent"):
+                WelcomeHandler(response)
+            if (application_started == True):
+                if (response.query_result.intent.display_name == "Exit"):
+                    ExitHandler(response)
+                    break
