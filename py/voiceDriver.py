@@ -2,7 +2,7 @@ import speech_recognition as sr
 from os import system
 import apiai
 import os
-from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT
+from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS
 from globalActions import handle_note
 
 
@@ -69,12 +69,16 @@ def handle_global_intent(sio, response):
 
 
 
-def handle_step2(sio, state):
+
+def handle_step2(sio, cur_state):
     print('Check the gasoline')
+    return {
+        'done': True
+    }
 
 
 
-def handle_step1(sio, state):
+def handle_step1(sio, cur_state):
     print('Is the truck on?')
     while True:
         print('beginning step 1')
@@ -87,17 +91,33 @@ def handle_step1(sio, state):
             print('exit step 1')
             # add_to_db(step1info)
             return {
-                'next_handler' : handle_step2
+                'next_handler' : handle_step2,
+                'done' : cur_state['done']
             }
         else:
             print('input not accepted')
         
-        
+
+def main_menu(sio, cur_state):
+    print('Welcome to the diagnostic tool. What would you like to do?')
+    while True:
+        response = get_intent(sio)
+        if not response: continue
+        if(response.intent.display_name in GLOBAL_INTENTS):
+            handle_global_intent(sio, response)
+        elif response.intent.display_name == RUN_DIAGNOSTICS:
+            # add_to_db(step1info)
+            return {
+                'next_handler' : handle_step1,
+                'done' : cur_state['done']
+            }
+        else:
+            print('input not accepted')
 
 
 
 state = {
-    'next_handler' : handle_step1,
+    'next_handler' : main_menu,
     'done': False
 }
 
@@ -110,6 +130,8 @@ def runDriver(sio):
         mic = True
     while not state['done']:
         state = state['next_handler'](sio, state)
+
+    sio.disconnect()
 
 
 # def testDriver(sio):

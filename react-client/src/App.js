@@ -1,33 +1,50 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { subscribeToTimer } from './api';
+import { subscribeToServer } from './api';
+import { Button } from 'react-materialize'
+import Text from './screen/text'
+import "materialize-css/dist/css/materialize.css"
+import {handle} from './socketHandler'
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state={
-      displayStr: 'Default'
+    this.state = {
+      view: 'Main',
+      noteStr: 'Default'
     }
-    subscribeToTimer((err, timestamp) => { console.log('Heard somthing');
-    console.log(timestamp);
-    this.setState({displayStr: timestamp.data})});
+    this.changeDisplayString = this.changeDisplayString.bind(this)
+    subscribeToServer((obj) => {
+      this.setState(
+        handle(this.state, obj)
+      )
+      console.log('State is now: ')
+      console.log(this.state)
+    });
   }
 
-render(){
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Yeet: {this.state.displayStr}
-        </p>
-        
-      </header>
-    </div>
-  );
-}
-  
+  changeDisplayString(str){
+    this.setState({noteStr: str})
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <p>
+            {this.state.noteStr}
+          </p>
+          <Button waves="light" style={{ marginRight: '5px' }}>
+            button
+        </Button>
+          <Text displayStr={this.state.noteStr} change={this.changeDisplayString}/>
+
+
+        </header>
+      </div>
+    );
+  }
+
 }
 
 export default App;
