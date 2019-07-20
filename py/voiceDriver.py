@@ -2,7 +2,7 @@ import speech_recognition as sr
 from os import system
 import apiai
 import os
-from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS
+from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT
 from globalActions import handle_note
 
 
@@ -67,13 +67,20 @@ def handle_global_intent(sio, response):
         print('No globals')
 
 
+def handle_step3(sio, cur_state):
+    print('Check the gasoline')
+    return {
+        'next_handler': main_menu,
+        'done': False
+    }
 
 
 
 def handle_step2(sio, cur_state):
     print('Check the gasoline')
     return {
-        'done': True
+        'next_handler': main_menu,
+        'done': False
     }
 
 
@@ -93,6 +100,12 @@ def handle_step1(sio, cur_state):
             return {
                 'next_handler' : handle_step2,
                 'done' : cur_state['done']
+            }
+
+        elif response.intent.display_name == NO_INTENT:
+            return {
+                'next_handler' : handle_step3,
+                'done' : False
             }
         else:
             print('input not accepted')
