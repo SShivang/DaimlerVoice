@@ -145,7 +145,10 @@ class App extends React.Component {
       elemArr.push(
         <div style={{margin:'3em 3em', color:'white'}}>
           <h1>Report</h1>
+          <h3> Diagnostic Status </h3>
           <Report arr={this.state.report} style={{color: 'black'}}/>
+          <h3 style={{marginTop:'3em'}}>Notes</h3 >
+          <Report arr={this.state.notes} style={{color: 'black'}}/>
           <div>
             <span>
               <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
