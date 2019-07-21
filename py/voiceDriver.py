@@ -4,7 +4,7 @@ import apiai
 import os
 from template import smartList
 from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT
-
+import text, controller
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
@@ -23,6 +23,7 @@ def detect_intent_texts(project_id, session_id, text, language_code):
     response = session_client.detect_intent(session=session, query_input=query_input)
     print(response)
     return response
+
 
 
 mic = False
@@ -78,11 +79,21 @@ def getParts(sio, part_str):
     #Check how many of a certain part is avaliable
 
 def contactCustomer(sio):
+    #input
+    customer_id = 1
+    for dio in text.diagnostic:
+        if dio["customer_id"] == 1:
+            for cust in text.customer:
+                if cust['customer_id'] == customer_id:
+                   phoneNumber = cust["phone"]
+                   controller.makeCall(phoneNumber)
+                   print("Call Initiated")
+                    
+        else: 
+            print("No Diagnostic for customer with id {}".format(customer_id))
+
     print("Calling customer")
-    #Need to check the last diagnostic this person ran
-
-    #Twilio
-
+   
 def runDiagnostics(sio):
     print('Running some diagnostics')
     state = smartList[1]
