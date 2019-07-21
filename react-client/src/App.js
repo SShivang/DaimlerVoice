@@ -137,16 +137,7 @@ class App extends React.Component {
               Running diagnostic
             </h2>
 
-          </Card> </div>
-
-      )
-    }
-    else if(view === 'REPORT'){
-      elemArr.push(
-        <div style={{margin:'3em 3em', color:'white'}}>
-          <h1>Report</h1>
-          <Report arr={this.state.report} style={{color: 'black'}}/>
-          <div>
+          </Card> <div>
             <span>
               <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
               <Icon>insert_chart</Icon>
@@ -156,6 +147,29 @@ class App extends React.Component {
               </div>
             </Chip>
             </span>
+            <span >
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+                <Icon>face</Icon>
+                <div style={{padding:'0em .8em'}}>
+
+                Contact Customer
+                </div>
+            </Chip>
+            </span>
+          </div></div>
+
+      )
+    }
+    else if(view === 'REPORT'){
+      elemArr.push(
+        <div style={{margin:'3em 3em', color:'white'}}>
+          <h1>Report</h1>
+          <h3> Diagnostic Status </h3>
+          <Report arr={this.state.report} style={{color: 'black'}}/>
+          <h3 style={{marginTop:'3em'}}>Notes</h3 >
+          <Report arr={this.state.notes} style={{color: 'black'}}/>
+          <div>
+        
             <span >
               <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
                 <Icon>face</Icon>

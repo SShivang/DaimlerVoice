@@ -6,7 +6,7 @@ import os
 from template import smartList, inventory, parts
 from intentGlobals import CONFUSED, GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, \
 RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL, GO_BACK, EXIT, \
-REPORT_INTENT
+REPORT_INTENT, NUMBER_INTENT, THRESHOLD
 import json
 from twilio.twiml.voice_response import VoiceResponse, Say
 
@@ -58,7 +58,7 @@ def get_intent(sio):
     response = 'empty response!'
     command = 'default'
     if mic:
-        input()
+        raw_input()
         with sr.Microphone() as source:
             r = sr.Recognizer()
             print('listening...')
@@ -77,7 +77,7 @@ def get_intent(sio):
                 response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
     else:
         print('enter next command')
-        command = input()
+        command = raw_input()
         response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
     print('RETURN FROM GET INTENT')
     result = response.query_result if response != 'empty response!' else command
@@ -130,10 +130,16 @@ def runDiagnostics(sio):
         textToSpeech(state['Text'])
         response = get_intent(sio)
         if not hasattr(response, "intent"): continue
-        if(response.intent.display_name in GLOBAL_INTENTS):
+        while(hasattr(response, "intent") and response.intent.display_name in GLOBAL_INTENTS):
             handle_global_intent(sio, response)
+            response=get_intent(sio)
         if(response.intent.display_name == CONFUSED):
             continue
+        elif(response.intent.display_name == NUMBER_INTENT):
+            number_val= response.parameters.fields['number'].number_value
+            stat=state['YES_STAT'] if number_val < THRESHOLD else state['NO_STAT']
+            last_resp += stat + '  Voltage recorded: ' + str(number_val)
+            state = smartList[state['YES']] if number_val < THRESHOLD else smartList[state['NO']]
         elif (response.intent.display_name == YES_INTENT):
             last_resp += state['YES_STAT'] if 'YES_STAT' in state else ''
             state = smartList[state['YES']]
@@ -160,23 +166,25 @@ from globalActions import handle_note
 def runDriver(sio):
     global mic
     print('Use microphone ? (y/n)')
-    textInput = input()
+    textInput = raw_input()
     if textInput == 'y':
         mic = True
 
     #if any part is not in stock ask if you want to order it
-
+    INIT=True
     while True:
         state = {
             'done' : False
         }
         textToSpeech("What do you want to do? Look at the options below")
-        textToSpeech("It looks like you are running low on parts")
+        if INIT: textToSpeech("It looks like you are running low on parts")
+        INIT = False
         response = get_intent(textInput)
         if not hasattr(response, "intent"): continue
         if(response.intent.display_name in GLOBAL_INTENTS):
             handle_global_intent(sio, response)
-        elif (response.intent.display_name == RUN_DIAGNOSTICS):
+            response = get_intent(sio)
+        if (response.intent.display_name == RUN_DIAGNOSTICS):
             runDiagnostics(sio)
         elif (response.intent.display_name == PART_AVALIABLE):
             parameter = response.parameters.fields['part'].string_value
