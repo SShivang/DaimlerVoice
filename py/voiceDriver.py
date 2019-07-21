@@ -1,10 +1,14 @@
 import speech_recognition as sr
+from gtts import gTTS
 from os import system
 import apiai
 import os
 from template import smartList
-from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL, GO_BACK, EXIT
+from intentGlobals import CONFUSED, GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, \
+RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL, GO_BACK, EXIT, \
+REPORT_INTENT
 import json
+
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
@@ -25,6 +29,15 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 mic = False
 application_started = False
+
+def textToSpeech(text):
+    global mic
+    print('Audiating: %s', text)
+    if mic:
+        tts = gTTS(text=text, lang="en")
+        file='my.mp3'
+        tts.save(file)
+        os.system("mpg123 " + file)
 
 
 def get_intent(sio):
@@ -59,12 +72,14 @@ def get_intent(sio):
     print(result)
     return result
 
-from globalActions import handle_note
+from globalActions import handle_note, handle_report
 
 
 def handle_global_intent(sio, response):
     if response.intent.display_name == NOTE_INTENT:
         handle_note(sio, response)
+    elif response.intent.display_name == REPORT_INTENT:
+        handle_report(sio)
     else:
         print('No globals')
 
@@ -82,23 +97,29 @@ def contactCustomer(sio):
 def runDiagnostics(sio):
     print('Running some diagnostics')
     state = smartList[1]
+    last_resp = ''
     while state['Step'] != 0:
         print(state)
-        sio.emit('local', {'view': 'DIAG', 'text': state['Text']})
+        sio.emit('local', {'view': 'DIAG', 'text': state['Text'], 'table': state['Display-table'], 'prev': last_resp})
+        textToSpeech(state['Text'])
         response = get_intent(sio)
         if not hasattr(response, "intent"): continue
         if(response.intent.display_name in GLOBAL_INTENTS):
             handle_global_intent(sio, response)
-        if (response.intent.display_name == YES_INTENT):
+        if(response.intent.display_name == CONFUSED):
+            continue
+        elif (response.intent.display_name == YES_INTENT):
+            last_resp = state['YES_STAT']
             state = smartList[state['YES']]
-        if (response.intent.display_name == NO_INTENT):
+        elif (response.intent.display_name == NO_INTENT):
             state = smartList[state['NO']]
     while True:
         sio.emit('local', {'view': 'DIAG', 'text': state['Text']})
         response = get_intent(sio)
         if not hasattr(response, "intent"): continue
-        if(response.intent.display_name == GO_BACK):
+        if response.intent.display_name == YES_INTENT or response.intent.display_name == GO_BACK :
             sio.emit('local', {'view': 'MAIN'})
+            break
 
     
     print('diagnostics are over')
@@ -116,6 +137,7 @@ def runDriver(sio):
         state = {
             'done' : False
         }
+        textToSpeech("What do you want to do? Look at the options below")
         response = get_intent(textInput)
         if not hasattr(response, "intent"): continue
         if(response.intent.display_name in GLOBAL_INTENTS):

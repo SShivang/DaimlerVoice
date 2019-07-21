@@ -6,6 +6,8 @@ NO_INTENT = "No_intent"
 GO_BACK= "go_back"
 EXIT="Exit"
 
+
+CONFUSED = 'Confused_intent'
 NOTE_INTENT = 'Notes_intent'
 REPORT_INTENT = 'Report_intent'
 RUN_DIAGNOSTICS = 'RunDiagnostics'
