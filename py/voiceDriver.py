@@ -3,7 +3,6 @@ from os import system
 import apiai
 import os
 from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT
-from globalActions import handle_note
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
@@ -32,7 +31,9 @@ def get_intent(sio):
     global application_started
     global mic
     response = 'empty response!'
+    command = 'default'
     if mic:
+        raw_input()
         with sr.Microphone() as source:
             r = sr.Recognizer()
             print('listening...')
@@ -52,12 +53,14 @@ def get_intent(sio):
         print('enter next command')
         command = raw_input()
         response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
-    print(response)
-    
-    return response.query_result if response != 'empty response!' else None
+    print('RETURN FROM GET INTENT')
+    # print(response)
+
+    return response.query_result if response != 'empty response!' else command
 
 
 
+from globalActions import handle_note
 
 
 def handle_global_intent(sio, response):
@@ -91,7 +94,7 @@ def handle_step1(sio, cur_state):
         print('beginning step 1')
 
         response = get_intent(sio)
-        if not response: continue
+        if not hasattr(response, 'intent'): continue
         if(response.intent.display_name in GLOBAL_INTENTS):
             handle_global_intent(sio, response)
         elif response.intent.display_name == YES_INTENT:
@@ -115,7 +118,7 @@ def main_menu(sio, cur_state):
     print('Welcome to the diagnostic tool. What would you like to do?')
     while True:
         response = get_intent(sio)
-        if not response: continue
+        if not hasattr(response, 'intent'): continue
         if(response.intent.display_name in GLOBAL_INTENTS):
             handle_global_intent(sio, response)
         elif response.intent.display_name == RUN_DIAGNOSTICS:
