@@ -52,7 +52,7 @@ smartList = [
 
 {
   'Step' : 5,
-  'Text' : "Use the link below to determine the correct diagnostic probe part number for the Intake Manifold Pressure/Temperature Sensor. Measure the voltage between pin 1 of the intake manifold pressure/temperature sensor harness connector and ground. Enter the voltage below. Is the voltage less than or equal to 6 V?",
+  'Text' : "Use the link below to determine the correct diagnostic probe part number for the Intake Manifold Pressure/Temperature Sensor. Measure the voltage between pin 1 of the intake manifold pressure/temperature sensor harness connector and ground. What is the measured voltage?",
   'YES'  : 3,
   'NO'   : 6,
   'YES_STAT' : "Primary Voltage Status: Voltage is less than or equal to 6 V. Proceed to appropriate wiring harness repairs.",
