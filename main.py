@@ -30,6 +30,7 @@ def detect_intent_texts(project_id, session_id, text, language_code):
     print('Fulfillment text: {}\n'.format(
             response.query_result.fulfillment_text))
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", ["Call Bob"], "en")
 
@@ -40,6 +41,8 @@ detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HW
 
 #I'M PRACTICING GITHUB FROM STEVE
 =======
+=======
+>>>>>>> df1e0c47283670dd46586852a8f1d7219f2e9d94
     return response
 
 def WelcomeHandler(response):
@@ -82,4 +85,7 @@ if __name__ == '__main__':
                 command = raw_input()
                 response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
                 return response
+<<<<<<< HEAD
+>>>>>>> df1e0c47283670dd46586852a8f1d7219f2e9d94
+=======
 >>>>>>> df1e0c47283670dd46586852a8f1d7219f2e9d94
