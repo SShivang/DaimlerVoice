@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.css';
 import { subscribeToServer } from './api';
-import { Button, Card } from 'react-materialize'
+import { Button, Card, Chip, Icon } from 'react-materialize'
 import Text from './screen/text'
 import "materialize-css/dist/css/materialize.css"
 import { handle } from './socketHandler'
 import PartTable from './screen/table';
+import Report from './screen/report'
 
 class App extends React.Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class App extends React.Component {
       notes: [],
       step: '0step',
       table: false,
+      report: []
     }
     this.changeDisplayString = this.changeDisplayString.bind(this)
     subscribeToServer((obj) => {
@@ -42,6 +44,26 @@ class App extends React.Component {
           Save
       </Button>
         </Card>
+        <div>
+            <span>
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+              <Icon>insert_chart</Icon>
+              <div style={{padding:'0em .8em'}}>
+              View Report
+
+              </div>
+            </Chip>
+            </span>
+            <span >
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+                <Icon>face</Icon>
+                <div style={{padding:'0em .8em'}}>
+
+                Contact Customer
+                </div>
+            </Chip>
+            </span>
+          </div>
       </div>
         </div>)
     }
@@ -49,8 +71,43 @@ class App extends React.Component {
     if (view === 'MAIN') {
       elemArr.push(
         <div className="center" key="MAIN">
-          <h2 style={{color:'white'}}>Main View. What would you like to do?</h2>
+          <Card>
+
+          <h2>Welcome to Spaceship! </h2>
+          <hr></hr>
+          <h5>...your end-to-end voice solution for technical repairs.</h5>
+          <p>Try one of the commands below</p>
           
+          </Card>
+          
+          <div>
+            <span>
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+              <Icon>insert_chart</Icon>
+              <div style={{padding:'0em .8em'}}>
+              View Report
+
+              </div>
+            </Chip>
+            </span>
+            <span>
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+              <Icon>aspect_ratio</Icon>
+              <div style={{padding:'0em .8em'}}>
+                Start Diagnostics
+                </div>
+            </Chip>
+            </span>
+            <span >
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+                <Icon>face</Icon>
+                <div style={{padding:'0em .8em'}}>
+
+                Contact Customer
+                </div>
+            </Chip>
+            </span>
+          </div>
          
         </div>
       )
@@ -63,9 +120,9 @@ class App extends React.Component {
           <Card>
             <h2 style={{fontSize:'2.56rem'}}>{this.state.step}</h2>
             <hr></hr>
-            <h2>
+            <h1>
               Running diagnostic
-            </h2>
+            </h1>
 
           </Card>
             <Card>
@@ -82,6 +139,35 @@ class App extends React.Component {
 
           </Card> </div>
 
+      )
+    }
+    else if(view === 'REPORT'){
+      elemArr.push(
+        <div style={{margin:'3em 3em', color:'white'}}>
+          <h1>Report</h1>
+          <Report arr={this.state.report} style={{color: 'black'}}/>
+          <div>
+            <span>
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+              <Icon>insert_chart</Icon>
+              <div style={{padding:'0em .8em'}}>
+              View Report
+
+              </div>
+            </Chip>
+            </span>
+            <span >
+              <Chip style={{color:'white', margin: '1em .5em', backgroundColor:'#60bfbf', display: 'inline-flex' ,verticalAlign:'middle', padding:'.1em 1em'}}>
+                <Icon>face</Icon>
+                <div style={{padding:'0em .8em'}}>
+
+                Contact Customer
+                </div>
+            </Chip>
+            </span>
+          </div>
+        </div>
+        
       )
     }
     

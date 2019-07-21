@@ -118,9 +118,10 @@ def runDiagnostics(sio):
         if(response.intent.display_name == CONFUSED):
             continue
         elif (response.intent.display_name == YES_INTENT):
-            last_resp = state['YES_STAT']
+            last_resp = state['YES_STAT'] if 'YES_STAT' in state else ''
             state = smartList[state['YES']]
         elif (response.intent.display_name == NO_INTENT):
+            last_resp = state['NO_STAT'] if 'NO_STAT' in state else ''
             state = smartList[state['NO']]
     while True:
         sio.emit('local', {'view': 'DIAG', 'text': state['Text']})

@@ -20,6 +20,9 @@ export function handle(state, action){
     else if(action.view === 'MAIN'){
         return handleMain(state, action)
     }
+    else if(action.view === 'REPORT'){
+        return handleReport(state,action)
+    }
     else{
         console.log('NO HANDLER FOR ACTION ' + action.view)
     }
@@ -33,14 +36,18 @@ function handleMain(state, action){
 function handleNote(state, action){
     console.log('handling note')
     let newView = state.view[state.view.length-1] === action.view ? state.view : state.view.concat('NOTE')
-    console.log(state.notes)
     return {...state, view: newView, notes: state.notes.concat(action.noteStr)}
 }
 
 function handleDiag(state, action){
     console.log('handling diag')
     let newView = state.view[state.view.length-1] === action.view ? state.view : state.view.concat('DIAG')
-    return {...state, view: newView, step: action.text, table: (action.table === "YES")}
+    return {...state, view: newView, step: action.text, table: (action.table === "YES"), 
+        report: action.prev !== ''  && state.report[state.report.length-1] !== action.prev
+        ? state.report.concat(action.prev) : state.report}
+}
 
-
+function handleReport(state, action){
+    let newView = state.view[state.view.length-1] === action.view ? state.view : state.view.concat('REPORT')
+    return {...state, view: newView}
 }
