@@ -1,5 +1,5 @@
 import socketio
-from voiceDriver import runDriver 
+from voiceDriver import runDriver
 sio = socketio.Client()
 
 @sio.event
@@ -27,5 +27,5 @@ if __name__ == '__main__':
 #         sio.emit('voice', {
 #                 'data': g,
 #                 'type': 'Voicetype',
-        
+
 #         })

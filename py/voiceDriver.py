@@ -3,8 +3,8 @@ from os import system
 import apiai
 import os
 from template import smartList
-from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT, GO_BACK, EXIT
-
+from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL, GO_BACK, EXIT
+import json
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
@@ -68,17 +68,14 @@ def handle_global_intent(sio, response):
     else:
         print('No globals')
 
-
-
-
 def getParts(sio, part_str):
-    print("Looking for" + part_str)
+    print("Looking for" + str(part_str))
 
     #Check how many of a certain part is avaliable
 
 def contactCustomer(sio):
     print("Calling customer")
-    #Need to check the last diagnostic this person ran
+    #Need to check the last diagnostic this person ran and check the parts not in warranty
 
     #Twilio
 
@@ -97,6 +94,7 @@ def runDiagnostics(sio):
         if (response.intent.display_name == NO_INTENT):
             state = smartList[state['NO']]
     while True:
+        sio.emit('local', {'view': 'DIAG', 'text': state['Text']})
         response = get_intent(sio)
         if not hasattr(response, "intent"): continue
         if(response.intent.display_name == GO_BACK):
@@ -113,7 +111,7 @@ def runDriver(sio):
         mic = True
 
     #if any part is not in stock ask if you want to order it
-    
+
     while True:
         state = {
             'done' : False
@@ -124,6 +122,14 @@ def runDriver(sio):
             handle_global_intent(sio, response)
         elif (response.intent.display_name == RUN_DIAGNOSTICS):
             runDiagnostics(sio)
+        
+
+        elif (response.intent.display_name == PART_AVALIABLE):
+            parameter = response.parameters.fields['part'].string_value
+            getParts(sio, parameter)
+
+        elif (response.intent.display_name == CUSTOMER_APPROVAL):
+            contactCustomer(sio)
         elif (response.intent.display_name == EXIT):
             print('Exiting...')
             sio.disconnect()
@@ -131,3 +137,4 @@ def runDriver(sio):
 
 
 
+    sio.disconnect()
