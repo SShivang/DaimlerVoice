@@ -2,10 +2,9 @@ import speech_recognition as sr
 from os import system
 import apiai
 import os
-from template import smartList
+from template import smartList, inventory, parts
 from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL
 import json
-
 
 def detect_intent_texts(project_id, session_id, text, language_code):
 
@@ -27,7 +26,6 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 mic = False
 application_started = False
-
 
 def get_intent(sio):
     global application_started
@@ -60,8 +58,6 @@ def get_intent(sio):
 
     return response.query_result if response != 'empty response!' else command
 
-from globalActions import handle_note
-
 
 def handle_global_intent(sio, response):
     if response.intent.display_name == NOTE_INTENT:
@@ -72,12 +68,13 @@ def handle_global_intent(sio, response):
 def getParts(sio, part_str):
     print("Looking for" + str(part_str))
 
+    print("After looking at the database we found that there are " + str(inventory[part_str]) + " " + str(part_str))
     #Check how many of a certain part is avaliable
 
 def contactCustomer(sio):
     print("Calling customer")
     #Need to check the last diagnostic this person ran and check the parts not in warranty
-
+    
     #Twilio
 
 def runDiagnostics(sio):
@@ -92,7 +89,12 @@ def runDiagnostics(sio):
             state = smartList[state['YES']]
         if (response.intent.display_name == NO_INTENT):
             state = smartList[state['NO']]
+
+
     print('diagnostics are over')
+
+
+from globalActions import handle_note
 
 def runDriver(sio):
     global mic
@@ -117,7 +119,5 @@ def runDriver(sio):
 
         if (temp.intent.display_name == CUSTOMER_APPROVAL):
             contactCustomer(sio)
-
-
 
     sio.disconnect()
