@@ -8,7 +8,7 @@ from intentGlobals import CONFUSED, GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, \
 RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL, GO_BACK, EXIT, \
 REPORT_INTENT
 import json
-
+from twilio.twiml.voice_response import VoiceResponse, Say
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
@@ -29,6 +29,10 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 mic = False
 application_started = False
+
+# Download the helper library from https://www.twilio.com/docs/python/install
+from twilio.rest import Client
+
 
 def textToSpeech(text):
     global mic
@@ -54,7 +58,7 @@ def get_intent(sio):
     response = 'empty response!'
     command = 'default'
     if mic:
-        raw_input()
+        input()
         with sr.Microphone() as source:
             r = sr.Recognizer()
             print('listening...')
@@ -73,7 +77,7 @@ def get_intent(sio):
                 response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
     else:
         print('enter next command')
-        command = raw_input()
+        command = input()
         response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
     print('RETURN FROM GET INTENT')
     result = response.query_result if response != 'empty response!' else command
@@ -97,11 +101,24 @@ def handle_global_intent(sio, response):
 #     # output("After looking at the database we found that there are " + str(inventory[part_str]) + " " + str(part_str))
 #     #Check how many of a certain part is avaliable
 
-# def contactCustomer(sio):
-#     # output("Calling customer")
-#     #Need to check the last diagnostic this person ran and check the parts not in warranty
+def contactCustomer(sio):
+    textToSpeech("Calling customer")
+    account_sid = 'AC0b7ae2e58a61e02e5e18bd892184ce7d'
+    auth_token = 'a71f1eca611b70a7de31f526e5ec9f82'
+    client = Client(account_sid, auth_token)
+    call = client.calls.create(url = 'https://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient', to='+15129684998', from_='+17372048501')
 
-#     #Twilio
+def sendSMSForInvoicing(sio):
+    textToSpeech("Calling customer")
+    account_sid = 'AC0b7ae2e58a61e02e5e18bd892184ce7d'
+    auth_token = 'a71f1eca611b70a7de31f526e5ec9f82'
+    client = Client(account_sid, auth_token)
+    message = client.messages.create(
+                              body='After examining all the parts total estimation for this procedure is $1200',
+                              from_='+17372048501',
+                              to='+15129684998'
+                          )
+    # call = client.calls.create(url = 'https://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient', to='+15129684998', from_='+17372048501')
 
 def runDiagnostics(sio):
     # output('Running some diagnostics')
@@ -118,11 +135,18 @@ def runDiagnostics(sio):
         if(response.intent.display_name == CONFUSED):
             continue
         elif (response.intent.display_name == YES_INTENT):
-            last_resp = state['YES_STAT'] if 'YES_STAT' in state else ''
+            last_resp += state['YES_STAT'] if 'YES_STAT' in state else ''
             state = smartList[state['YES']]
         elif (response.intent.display_name == NO_INTENT):
-            last_resp = state['NO_STAT'] if 'NO_STAT' in state else ''
+            last_resp += state['NO_STAT'] if 'NO_STAT' in state else ''
             state = smartList[state['NO']]
+    textToSpeech("A sample parts directory was generated and sent to parts department")
+    sendSMSForInvoicing(sio)
+    textToSpeech("Some parts are not covered by warranty would you like to get approval")
+    s = get_intent(sio)
+    if (s.intent.display_name):
+        contactCustomer(sio)
+    textToSpeech("An invoice for the procedure was sent")
     while True:
         sio.emit('local', {'view': 'DIAG', 'text': state['Text']})
         response = get_intent(sio)
@@ -131,13 +155,12 @@ def runDiagnostics(sio):
             sio.emit('local', {'view': 'MAIN'})
             break
 
-
 from globalActions import handle_note
 
 def runDriver(sio):
     global mic
     print('Use microphone ? (y/n)')
-    textInput = raw_input()
+    textInput = input()
     if textInput == 'y':
         mic = True
 
@@ -148,6 +171,7 @@ def runDriver(sio):
             'done' : False
         }
         textToSpeech("What do you want to do? Look at the options below")
+        textToSpeech("It looks like you are running low on parts")
         response = get_intent(textInput)
         if not hasattr(response, "intent"): continue
         if(response.intent.display_name in GLOBAL_INTENTS):
