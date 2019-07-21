@@ -4,19 +4,10 @@ import mysql.connector
 from twilio.rest import Client
 
 
+
 app = Flask(__name__)
-
-
 mysql = MySQL()
-# app.config['MYSQL_DATABASE_USER'] = 'root'
-# app.config['MYSQL_DATABASE_PASSWORD'] = 'clock123'
-# app.config['MYSQL_DATABASE_DB'] = 'truckdb'
-# app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
-# USER: bb0c0affdfeedb
-# PASS: a6d7f403
-# Host: us-cdbr-iron-east-02.cleardb.net
-# DATABASE: heroku_7debe1263990cca
 
 app.config['MYSQL_DATABASE_USER'] = 'sql9299267'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'sHDDIRT8R8'
@@ -28,6 +19,12 @@ mysql.init_app(app)
 
 con = mysql.connect()
 
+
+def findPhoneByCustomer(customer_id="1"): 
+    phoneNumber = select("phone", "customer", "cusomter_id", customer_id)
+    print(phoneNumber)
+    makeCall(phoneNumber)
+    print("Call Initiated")
 
 
 
@@ -45,7 +42,8 @@ def select(attribute, table, value="",query=""):
 
 @app.route('/')
 def home():
-	return "OK 200"
+    findPhoneByCustomer()
+    return "OK 200"
 
 @app.route('/diagnostic/<int:id>', methods=['GET', 'POST', 'DELETE','PUT'])
 def diagnostic(id): 
@@ -58,7 +56,6 @@ def diagnostic(id):
 @app.route('/diagnostic')
 def diagnostics():
     data = select("*", "customer")
-    #sendText()
     makeCall()
     return jsonify(data)
    
@@ -100,3 +97,4 @@ def sendText(phoneNumber="3057854963"):
 
 
 app.run(debug=True, port=8000)
+
