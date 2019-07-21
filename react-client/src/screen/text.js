@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput } from 'react-materialize'
+import {Textarea} from 'react-materialize'
 import "materialize-css/dist/css/materialize.css"
 
 class Text extends React.Component {
@@ -23,7 +23,7 @@ class Text extends React.Component {
   render() {
     return (
       <div>
-          <TextInput value={this.props.displayStr} onChange={this.onChange}/>
+          <Textarea style={{minHeight: '9em', color: 'white'}} value={this.props.displayStr} onChange={this.onChange}/>
       </div>
     );
   }
