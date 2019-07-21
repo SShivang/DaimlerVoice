@@ -3,7 +3,7 @@ from gtts import gTTS
 from os import system
 import apiai
 import os
-from template import smartList
+from template import smartList, inventory, parts
 from intentGlobals import CONFUSED, GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, \
 RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL, GO_BACK, EXIT, \
 REPORT_INTENT
@@ -38,6 +38,14 @@ def textToSpeech(text):
         file='my.mp3'
         tts.save(file)
         os.system("mpg123 " + file)
+
+
+# # def output(str):
+#     global mic
+#     if (!mic)
+#         print("Looking for" + str(part_str))
+#     else
+#         system(say + " " + "Looking for" + str(part_str))
 
 
 def get_intent(sio):
@@ -83,19 +91,20 @@ def handle_global_intent(sio, response):
     else:
         print('No globals')
 
-def getParts(sio, part_str):
-    print("Looking for" + str(part_str))
+# def getParts(sio, part_str):
 
-    #Check how many of a certain part is avaliable
+#     # output("Looking for" + str(part_str))
+#     # output("After looking at the database we found that there are " + str(inventory[part_str]) + " " + str(part_str))
+#     #Check how many of a certain part is avaliable
 
-def contactCustomer(sio):
-    print("Calling customer")
-    #Need to check the last diagnostic this person ran and check the parts not in warranty
+# def contactCustomer(sio):
+#     # output("Calling customer")
+#     #Need to check the last diagnostic this person ran and check the parts not in warranty
 
-    #Twilio
+#     #Twilio
 
 def runDiagnostics(sio):
-    print('Running some diagnostics')
+    # output('Running some diagnostics')
     state = smartList[1]
     last_resp = ''
     while state['Step'] != 0:
@@ -121,8 +130,8 @@ def runDiagnostics(sio):
             sio.emit('local', {'view': 'MAIN'})
             break
 
-    
-    print('diagnostics are over')
+
+from globalActions import handle_note
 
 def runDriver(sio):
     global mic
@@ -144,19 +153,14 @@ def runDriver(sio):
             handle_global_intent(sio, response)
         elif (response.intent.display_name == RUN_DIAGNOSTICS):
             runDiagnostics(sio)
-        
-
         elif (response.intent.display_name == PART_AVALIABLE):
             parameter = response.parameters.fields['part'].string_value
             getParts(sio, parameter)
-
         elif (response.intent.display_name == CUSTOMER_APPROVAL):
             contactCustomer(sio)
         elif (response.intent.display_name == EXIT):
-            print('Exiting...')
+            # output('Exiting...')
             sio.disconnect()
             break
-
-
 
     sio.disconnect()

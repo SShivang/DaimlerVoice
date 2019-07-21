@@ -20,12 +20,14 @@ smartList = [
 },
 
 {
-  'Step' : 2,
-  'Text' : "Disconnect the intake manifold pressure/temperature sensor and inspect the harness side for bent, spread, or corroded terminals. Is any damage to the harness found?",
-  'YES'  : 3,
-  'NO'   : 4,
-  'Value-Required' : 'YES',
-  'Display-table':'NO'
+ 'Step' : 2,
+ 'Text' : "Disconnect the intake manifold pressure/temperature sensor and inspect the harness side for bent, spread, or corroded terminals. Is any damage to the harness found?",
+ 'YES'  : 3,
+ 'NO'   : 4,
+ 'YES_STAT' : "Harness Damage Report: Damage to the harness was found. Please proceed to the appropriate repairs.",
+ 'NO_STAT' : "Harness Damage Report: Damage to the harness was not found. Pleace proceed to turn on the ignition.",
+ 'Value-Required' : 'YES',
+ 'Display-table':'NO'
 },
 
 {
@@ -53,8 +55,10 @@ smartList = [
   'Text' : "Use the link below to determine the correct diagnostic probe part number for the Intake Manifold Pressure/Temperature Sensor. Measure the voltage between pin 1 of the intake manifold pressure/temperature sensor harness connector and ground. Enter the voltage below. Is the voltage less than or equal to 6 V?",
   'YES'  : 3,
   'NO'   : 6,
+  'YES_STAT' : "Primary Voltage Status: Voltage is less than or equal to 6 V. Proceed to appropriate wiring harness repairs.",
+  'NO_STAT' : "Primary Voltage Status: Voltage is greater than 6 V. Please proceed to secondary voltage check.",
   'Value-Required' : 'YES',
-  'Display-table':'YES'
+  'Display-table': 'YES'
 
 },
 
@@ -63,8 +67,10 @@ smartList = [
   'Text' : "Check for the presence of voltage between pins 2 and 4 on the intake manifold pressure/temperature sensor harness connector. Is voltage present?",
   'YES'  : 7,
   'NO'   : 3,
+  'YES_STAT' : "Secondary Voltage Status: Voltage is present between the two connectors. Please proceed to the next component diagnostic test, if applicable.",
+  'NO_STAT' : "Secondary Voltage Status: Voltage is not present between the two connectors. Please proceed to the appropriate wiring harness repairs.",
   'Value-Required' : 'YES',
-  'Display-table':'NO'
+  'Display-table': 'NO'
 
 },
 
@@ -78,3 +84,11 @@ smartList = [
 
 },
 ]
+
+inventory = {
+   "air bags" : 3
+}
+
+parts = {
+"Repair-harness" : ["fuel shutoff valve", "fuel line pressure sensor", "fuel compensation pressure sensor", "intake throttle valve", "wastegate solenoid sensor", "intake air delta pressure", "intake manifold pressure/temp", "EGR valve", "brake gate solenoid", "turbo inlet temp"]
+}
