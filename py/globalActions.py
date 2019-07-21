@@ -16,4 +16,3 @@ def handle_note(sio, response):
         else:
             print('writing response')
             sio.emit('local', {'view':'action', 'action':'add_text', 'text': response.query_text})
-    sio.emit('local', { 'view': 'NOTE', 'noteStr':  text})
