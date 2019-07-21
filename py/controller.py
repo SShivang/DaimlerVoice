@@ -18,10 +18,10 @@ mysql = MySQL()
 # Host: us-cdbr-iron-east-02.cleardb.net
 # DATABASE: heroku_7debe1263990cca
 
-app.config['MYSQL_DATABASE_USER'] = 'bb0c0affdfeedb'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'a6d7f403'
-app.config['MYSQL_DATABASE_DB'] = 'heroku_7debe1263990cca'
-app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-02.cleardb.net'
+app.config['MYSQL_DATABASE_USER'] = 'sql9299267'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'sHDDIRT8R8'
+app.config['MYSQL_DATABASE_DB'] = 'sql9299267'
+app.config['MYSQL_DATABASE_HOST'] = 'sql9.freemysqlhosting.net'
 
 
 mysql.init_app(app)
@@ -34,9 +34,9 @@ con = mysql.connect()
 def select(attribute, table, value="",query=""):
     cur = mysql.get_db().cursor()
     if query == "":
-        res = cur.execute("SELECT {} FROM truckdb.{}".format(attribute, table))
+        res = cur.execute("SELECT {} FROM sql9299267.{}".format(attribute, table))
     else: 
-        res = cur.execute("SELECT {} FROM truckdb.{} where {}={}".format(attribute, table, query, value))
+        res = cur.execute("SELECT {} FROM sql9299267.{} where {}={}".format(attribute, table, query, value))
     con.commit()
     data = cur.fetchall()
     cur.close
@@ -50,21 +50,21 @@ def home():
 @app.route('/diagnostic/<int:id>', methods=['GET', 'POST', 'DELETE','PUT'])
 def diagnostic(id): 
     if request.method == "GET":
-        data = select("*", "diagnostic", "diagnostic_id", 1)
+        data = select("*", "customer", "customer_id", 1)
         return jsonify(data)
    
     return "BOOO :("
 
 @app.route('/diagnostic')
 def diagnostics():
-    data = select("*", "diagnostic")
+    data = select("*", "customer")
     #sendText()
     makeCall()
     return jsonify(data)
    
     
     # cur = mysql.connection.cursor()
-    # res = cur.execute("SELECT * FROM truckdb.service")
+    # res = cur.execute("SELECT * FROM sql9299267.customer")
     # mysql.connection.commit()
     # cur.close()
     # print(res)
