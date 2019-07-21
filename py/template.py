@@ -2,7 +2,7 @@
 smartList = [
 {
     'Step' : 0,
-    'Text' : "NULL",
+    'Text' : "Step 0",
     'YES'  : 0,
     'NO'   : 0,
     'Value-Required' : 'YES'
@@ -10,7 +10,7 @@ smartList = [
 
 {
     'Step' : 1,
-    'Text' : "Yeet",
+    'Text' : "Step 1",
     'YES'  : 4,
     'NO'   : 2,
     'Value-Required' : 'YES'
@@ -19,7 +19,7 @@ smartList = [
 
 {
     'Step' : 2,
-    'Text' : "Yeeter",
+    'Text' : "Step 2",
     'YES'  : 0,
     'NO'   : 3,
     'Value-Required' : 'YES'
@@ -27,7 +27,7 @@ smartList = [
 
 {
     'Step' : 3,
-    'Text' : "Whear",
+    'Text' : "Step 3",
     'YES'  : 4,
     'NO'   : 0,
     'Value-Required' : 'YES'
@@ -36,7 +36,7 @@ smartList = [
 
 {
     'Step' : 4,
-    'Text' : "My name is sam",
+    'Text' : "Step 4",
     'YES'  : 0,
     'NO'   : 0,
     'Value-Required' : 'YES'

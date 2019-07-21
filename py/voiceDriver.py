@@ -3,7 +3,7 @@ from os import system
 import apiai
 import os
 from template import smartList
-from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT
+from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT, GO_BACK, EXIT
 
 
 
@@ -13,7 +13,6 @@ def detect_intent_texts(project_id, session_id, text, language_code):
     session_client = dialogflow.SessionsClient()
 
     session = session_client.session_path(project_id, session_id)
-    print('Session path: {}\n'.format(session))
 
     text_input = dialogflow.types.TextInput(
             text=text, language_code=language_code)
@@ -21,7 +20,6 @@ def detect_intent_texts(project_id, session_id, text, language_code):
     query_input = dialogflow.types.QueryInput(text=text_input)
 
     response = session_client.detect_intent(session=session, query_input=query_input)
-    print(response)
     return response
 
 
@@ -43,6 +41,7 @@ def get_intent(sio):
             print('interpreting...')
             recog_str = r.recognize_google(audio, language = 'e', show_all=True)
             print('Done')
+            print('You said: %s', recog_str)
 
             if (len(recog_str) != 0):
                 transcriptList = recog_str['alternative']
@@ -56,9 +55,9 @@ def get_intent(sio):
         command = raw_input()
         response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
     print('RETURN FROM GET INTENT')
-    # print(response)
-
-    return response.query_result if response != 'empty response!' else command
+    result = response.query_result if response != 'empty response!' else command
+    print(result)
+    return result
 
 from globalActions import handle_note
 
@@ -87,14 +86,23 @@ def runDiagnostics(sio):
     print('Running some diagnostics')
     state = smartList[1]
     while state['Step'] != 0:
-        print(state['Value-Required'])
+        print(state)
+        sio.emit('local', {'view': 'DIAG', 'text': state['Text']})
         response = get_intent(sio)
+        if not hasattr(response, "intent"): continue
         if(response.intent.display_name in GLOBAL_INTENTS):
             handle_global_intent(sio, response)
         if (response.intent.display_name == YES_INTENT):
             state = smartList[state['YES']]
         if (response.intent.display_name == NO_INTENT):
             state = smartList[state['NO']]
+    while True:
+        response = get_intent(sio)
+        if not hasattr(response, "intent"): continue
+        if(response.intent.display_name == GO_BACK):
+            sio.emit('local', {'view': 'MAIN'})
+
+    
     print('diagnostics are over')
 
 def runDriver(sio):
@@ -107,13 +115,19 @@ def runDriver(sio):
     #if any part is not in stock ask if you want to order it
     
     while True:
-        temp = get_intent(textInput)
         state = {
             'done' : False
         }
-        if (temp.intent.display_name == RUN_DIAGNOSTICS):
+        response = get_intent(textInput)
+        if not hasattr(response, "intent"): continue
+        if(response.intent.display_name in GLOBAL_INTENTS):
+            handle_global_intent(sio, response)
+        elif (response.intent.display_name == RUN_DIAGNOSTICS):
             runDiagnostics(sio)
+        elif (response.intent.display_name == EXIT):
+            print('Exiting...')
+            sio.disconnect()
+            break
 
-    sio.disconnect()
 
 
