@@ -24,7 +24,6 @@ def handle_report(sio):
     textToSpeech('To send the report, say send report. To go back to the diagnostic tool, say go back')
 
     while True:
-
         response = get_intent(sio)
         if not hasattr(response, 'intent'): continue
         elif response.intent.display_name == GO_BACK:
