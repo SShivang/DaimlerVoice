@@ -106,7 +106,7 @@ def contactCustomer(sio):
     account_sid = 'AC0b7ae2e58a61e02e5e18bd892184ce7d'
     auth_token = 'a71f1eca611b70a7de31f526e5ec9f82'
     client = Client(account_sid, auth_token)
-    call = client.calls.create(url = 'https://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient', to='+15129684998', from_='+17372048501')
+    call = client.calls.create(url = 'http://e7b6441d.ngrok.io/', to='+15129684998', from_='+17372048501')
 
 def sendSMSForInvoicing(sio):
     textToSpeech("Calling customer")
