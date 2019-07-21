@@ -3,8 +3,8 @@ from os import system
 import apiai
 import os
 from template import smartList
-from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT
-
+from intentGlobals import GLOBAL_INTENTS, YES_INTENT, NOTE_INTENT, RUN_DIAGNOSTICS, NO_INTENT, PART_AVALIABLE, CUSTOMER_APPROVAL
+import json
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
@@ -69,17 +69,14 @@ def handle_global_intent(sio, response):
     else:
         print('No globals')
 
-
-
-
 def getParts(sio, part_str):
-    print("Looking for" + part_str)
+    print("Looking for" + str(part_str))
 
     #Check how many of a certain part is avaliable
 
 def contactCustomer(sio):
     print("Calling customer")
-    #Need to check the last diagnostic this person ran
+    #Need to check the last diagnostic this person ran and check the parts not in warranty
 
     #Twilio
 
@@ -87,7 +84,7 @@ def runDiagnostics(sio):
     print('Running some diagnostics')
     state = smartList[1]
     while state['Step'] != 0:
-        print(state['Value-Required'])
+        print(state['Text'])
         response = get_intent(sio)
         if(response.intent.display_name in GLOBAL_INTENTS):
             handle_global_intent(sio, response)
@@ -105,7 +102,7 @@ def runDriver(sio):
         mic = True
 
     #if any part is not in stock ask if you want to order it
-    
+
     while True:
         temp = get_intent(textInput)
         state = {
@@ -114,6 +111,13 @@ def runDriver(sio):
         if (temp.intent.display_name == RUN_DIAGNOSTICS):
             runDiagnostics(sio)
 
+        if (temp.intent.display_name == PART_AVALIABLE):
+            parameter = temp.parameters.fields['part'].string_value
+            getParts(sio, parameter)
+
+        if (temp.intent.display_name == CUSTOMER_APPROVAL):
+            contactCustomer(sio)
+
+
+
     sio.disconnect()
-
-
