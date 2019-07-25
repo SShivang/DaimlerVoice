@@ -41,7 +41,7 @@ def textToSpeech(text):
         tts = gTTS(text=text, lang="en")
         file='my.mp3'
         tts.save(file)
-        os.system("mpg123 " + file)
+        os.system("mpg123 -d 3 -h 2 " + file)
 
 
 # # def output(str):
@@ -177,7 +177,7 @@ def runDriver(sio):
             'done' : False
         }
         textToSpeech("What do you want to do? Look at the options below")
-        if INIT: textToSpeech("It looks like you are running low on parts")
+        if INIT: textToSpeech("Inventory scan completed. Some parts need to be restocked.")
         INIT = False
         response = get_intent(textInput)
         if not hasattr(response, "intent"): continue
