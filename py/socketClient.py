@@ -1,5 +1,5 @@
 import socketio
-from voiceDriver import runDriver 
+from voiceDriver import runDriver
 sio = socketio.Client()
 
 @sio.event
@@ -10,7 +10,7 @@ def connect():
 def disconnect():
     print('disconnected from server')
 
-sio.connect('http://localhost:5000')
+sio.connect('http://localhost:5001')
 
 def runApp():
         runDriver(sio)
@@ -27,5 +27,5 @@ if __name__ == '__main__':
 #         sio.emit('voice', {
 #                 'data': g,
 #                 'type': 'Voicetype',
-        
+
 #         })

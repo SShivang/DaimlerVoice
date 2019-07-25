@@ -23,7 +23,7 @@ class Text extends React.Component {
   render() {
     return (
       <div>
-          <Textarea style={{minHeight: '9em', color: 'white'}} value={this.props.displayStr} onChange={this.onChange}/>
+          <Textarea style={{minHeight: '9em', color: 'black', fontSize: '3em', textAlign: 'center'}} value={this.props.displayStr} onChange={this.onChange}/>
       </div>
     );
   }
