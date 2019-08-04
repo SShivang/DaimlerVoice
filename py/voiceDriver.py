@@ -75,11 +75,11 @@ def get_intent(sio):
                 command = transcript['transcript']
                 print('command is: ')
                 print(command)
-                response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
+                response = detect_intent_texts("daimlervoice-xadvoe", GOOGLE_CONTEXT, command , "en")
     else:
         print('enter next command')
         command = raw_input()
-        response = detect_intent_texts("daimlervoice-xadvoe", "AIzaSyAC8ja1pF9UmPId7MUZhbB8hAY8P_HWW7E", command , "en")
+        response = detect_intent_texts("daimlervoice-xadvoe", GOOGLE_CONTEXT, command , "en")
     print('RETURN FROM GET INTENT')
     result = response.query_result if response != 'empty response!' else command
     print(result)
@@ -104,20 +104,19 @@ def handle_global_intent(sio, response):
 
 def contactCustomer(sio):
     textToSpeech("Calling customer")
-    account_sid = 'AC0b7ae2e58a61e02e5e18bd892184ce7d'
-    auth_token = 'a71f1eca611b70a7de31f526e5ec9f82'
+    account_sid = TWILIO_ACCOUNT_SID
+    auth_token = API_KEY
     client = Client(account_sid, auth_token)
-    call = client.calls.create(url = 'http://e7b6441d.ngrok.io/', to='+15129684998', from_='+17372048501')
+    call = client.calls.create(url = 'http://e7b6441d.ngrok.io/', to= PHONE_NUMBER , from_= TWILIO_PHONE_NUMBER)
 
 def sendSMSForInvoicing(sio):
     textToSpeech("Calling customer")
-    account_sid = 'AC0b7ae2e58a61e02e5e18bd892184ce7d'
-    auth_token = 'a71f1eca611b70a7de31f526e5ec9f82'
+    account_sid = TWILIO_ACCOUNT_SID
+    auth_token = API_KEY
     client = Client(account_sid, auth_token)
     message = client.messages.create(
                               body='After examining all the parts total estimation for this procedure is $1200',
-                              from_='+17372048501',
-                              to='+15129684998'
+                              to= PHONE_NUMBER , from_= TWILIO_PHONE_NUMBER
                           )
     # call = client.calls.create(url = 'https://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient', to='+15129684998', from_='+17372048501')
 
